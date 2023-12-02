@@ -2,6 +2,7 @@ package org.abbo.nng.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.abbo.nng.service.NngAbboTradeSimulatorService;
+import org.nng.abbo.domain.product.NngAbboProduct;
 import org.nng.abbo.domain.product.NngAbboProductCategory;
 import org.nng.abbo.domain.sales.TradeSimulatorParameters;
 import org.nng.abbo.domain.sales.TradeSimulatorResponse;
@@ -32,13 +33,13 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
         LocalDate startDate = parameters.getFromDate().toLocalDate();
         LocalDate endDate = parameters.getToDate().toLocalDate();
 
-        while (startDate.isBefore(endDate)) {
+        while (endDate.isAfter(startDate)) {
             Integer numberOfTradesPerDay = generateRandomInteger(
                     parameters.getMaximumTradesPerDay() - parameters.getMinimumTradesPerDay());
 
-            for (int i = parameters.getMinimumTradesPerDay(); i < (parameters.getMinimumTradesPerDay() + numberOfTradesPerDay); i++) {
-                NngAbboProductCategory category = parameters.getCategoryList().get(generateRandomInteger(parameters.getCategoryList().size()));
-                log.info("This is the category: {}", category);
+            for (int i = parameters.getMinimumTradesPerDay(); i <= (parameters.getMinimumTradesPerDay() + numberOfTradesPerDay); i++) {
+                NngAbboProduct category = parameters.getProducts().get(generateRandomInteger(parameters.getProducts().size()));
+                log.info("This is the category: {}", category.getProductCategory());
             }
             numberOfTrades = numberOfTrades + 1;
             startDate = startDate.plusDays(1L);
