@@ -1,0 +1,7 @@
+server:
+  port: 8089
+
+domains:
+  services:
+    hosts:
+      oms: http://localhost:8085
