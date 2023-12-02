@@ -37,9 +37,8 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
             Integer numberOfTradesPerDay = generateRandomInteger(
                     parameters.getMaximumTradesPerDay() - parameters.getMinimumTradesPerDay());
 
-            for (int i = parameters.getMinimumTradesPerDay(); i <= (parameters.getMinimumTradesPerDay() + numberOfTradesPerDay); i++) {
+            for (int i = 0; i < (parameters.getMinimumTradesPerDay() + numberOfTradesPerDay); i++) {
                 NngAbboProduct category = parameters.getProducts().get(generateRandomInteger(parameters.getProducts().size()));
-                log.info("This is the category: {}", category.getProductCategory());
             }
             numberOfTrades = numberOfTrades + 1;
             startDate = startDate.plusDays(1L);
