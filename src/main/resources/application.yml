@@ -5,3 +5,4 @@ domains:
   services:
     hosts:
       oms: http://localhost:8085
+      caching: http://localhost:8086
