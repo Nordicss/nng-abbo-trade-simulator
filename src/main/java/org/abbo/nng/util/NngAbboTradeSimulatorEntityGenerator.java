@@ -11,20 +11,42 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class NngAbboTradeSimulatorEntityGenerator {
-    public static NngAbboSalesProduct createNngAbboOneTimeAnnualConsumption(String salesProductId,
-                                                                            NngAbboProduct product,
-                                                                            NngAbboCountry salesCountry,
-                                                                            NngAbboClient client,
-                                                                            NngPrice salesPrice,
-                                                                            LocalDateTime salesCreatedTime,
-                                                                            LocalDateTime startTime,
-                                                                            LocalDateTime endTime) {
+    public static NngAbboSalesProduct createNngAbboOneTimeOneYearConsumption(String salesProductId,
+                                                                             NngAbboProduct product,
+                                                                             NngAbboCountry salesCountry,
+                                                                             NngAbboClient client,
+                                                                             NngPrice salesPrice,
+                                                                             LocalDateTime salesCreatedTime,
+                                                                             LocalDateTime startTime,
+                                                                             LocalDateTime endTime) {
         return NngAbboOneTimeConsumption.builder()
                 .salesProductId(salesProductId)
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
                 .salesPrice(salesPrice)
+                .salesType(NngAbboSalesType.ONE_TIME_CONSUMPTION_ONE_YEAR)
+                .salesCreatedTime(salesCreatedTime)
+                .startTime(startTime)
+                .endTime(endTime)
+                .build();
+    }
+
+    public static NngAbboSalesProduct createNngAbboOneTimeThreeYearConsumption(String salesProductId,
+                                                                               NngAbboProduct product,
+                                                                               NngAbboCountry salesCountry,
+                                                                               NngAbboClient client,
+                                                                               NngPrice salesPrice,
+                                                                               LocalDateTime salesCreatedTime,
+                                                                               LocalDateTime startTime,
+                                                                               LocalDateTime endTime) {
+        return NngAbboOneTimeConsumption.builder()
+                .salesProductId(salesProductId)
+                .product(product)
+                .salesCountry(salesCountry)
+                .client(client)
+                .salesPrice(salesPrice)
+                .salesType(NngAbboSalesType.ONE_TIME_CONSUMPTION_THREE_YEAR)
                 .salesCreatedTime(salesCreatedTime)
                 .startTime(startTime)
                 .endTime(endTime)
@@ -48,6 +70,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .salesCreatedTime(salesCreatedTime)
                 .startTime(startTime)
                 .endTime(endTime)
+                .salesType(NngAbboSalesType.TRIAL_PACKAGE)
                 .build();
     }
 
@@ -151,7 +174,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .build();
     }
 
-    public static NngAbboTelephoneNumber createNngAbboTelephoneNumber(Integer countryCode, Long telephoneNumber) {
+    public static NngAbboTelephoneNumber createNngAbboTelephoneNumber(String countryCode, String telephoneNumber) {
         return NngAbboTelephoneNumber.builder()
                 .countryCode(countryCode)
                 .number(telephoneNumber)
@@ -239,5 +262,81 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .clientCreatedTime(clientCreatedTime)
                 .creditApprovedCustomer(creditApprovedCustomer)
                 .build();
+    }
+
+    public static NngAbboClient generateClient() {
+        NngAbboTelephoneNumber number = NngAbboTradeSimulatorEntityGenerator.createNngAbboTelephoneNumber("44", "79502934254");
+        NngAbboName name = NngAbboTradeSimulatorEntityGenerator.createNngAbboName("John", "Q", "Citizen", "John");
+        NngAbboStreetAddress streetAddress = NngAbboTradeSimulatorEntityGenerator.createNngAbboStreetAddress("Main Street", "102A");
+        NngAbboCountry country = NngAbboTradeSimulatorEntityGenerator.createNngAbboCountry("United Kingdom", "GB", "GBR");
+        NngAbboNationalIdNumber nationalIdNumber = NngAbboTradeSimulatorEntityGenerator.createNngAbboNationalIdNumber(country, "M01010276854");
+        NngAbboAddress address = NngAbboTradeSimulatorEntityGenerator.createNngAbboAddress(streetAddress, "W53UP", "Greater London", "London", null, country);
+
+        return NngAbboTradeSimulatorEntityGenerator.createNngAbboNewClient(
+                UUID.randomUUID().toString(),
+                nationalIdNumber,
+                name,
+                number,
+                address,
+                LocalDateTime.now(),
+                CreditApprovedCustomer.builder().isApproved(true).build());
+    }
+
+    public static NngAbboSalesProduct generateSalesProduct(NngAbboProduct product,
+                                                           NngAbboClient client,
+                                                           NngAbboSalesType salesType,
+                                                           NngPrice salesPrice,
+                                                           LocalDateTime createdTime
+    ) {
+
+        NngAbboSalesProduct salesProduct = null;
+        switch (salesType) {
+            case TRIAL_PACKAGE -> salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboTrialPackage(
+                    UUID.randomUUID().toString(),
+                    product,
+                    client.getNationalIdNumber().getCountry(),
+                    client,
+                    salesPrice,
+                    createdTime,
+                    createdTime,
+                    createdTime
+            );
+            case GENERAL_SUBSCRIPTION ->
+                    salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboGeneralSubscription(
+                            UUID.randomUUID().toString(),
+                            product,
+                            client.getNationalIdNumber().getCountry(),
+                            client,
+                            salesPrice,
+                            LocalDateTime.now(),
+                            LocalDateTime.now(),
+                            LocalDateTime.now(),
+                            NngAbboSalesPeriod.QUARTERLY
+                    );
+            case ONE_TIME_CONSUMPTION_ONE_YEAR ->
+                    salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboOneTimeOneYearConsumption(
+                            UUID.randomUUID().toString(),
+                            product,
+                            client.getNationalIdNumber().getCountry(),
+                            client,
+                            salesPrice,
+                            createdTime,
+                            createdTime,
+                            createdTime
+                    );
+            case ONE_TIME_CONSUMPTION_THREE_YEAR ->
+                    salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboOneTimeThreeYearConsumption(
+                            UUID.randomUUID().toString(),
+                            product,
+                            client.getNationalIdNumber().getCountry(),
+                            client,
+                            salesPrice,
+                            createdTime,
+                            createdTime,
+                            createdTime
+                    );
+        }
+
+        return salesProduct;
     }
 }
