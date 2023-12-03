@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class NngAbboTradeSimulatorEntityGenerator {
     public static NngAbboSalesProduct createNngAbboOneTimeOneYearConsumption(String salesProductId,
+                                                                             NngAbboSubscriptionPriceKey subscriptionKey,
                                                                              NngAbboProduct product,
                                                                              NngAbboCountry salesCountry,
                                                                              NngAbboClient client,
@@ -21,6 +22,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                              LocalDateTime endTime) {
         return NngAbboOneTimeConsumption.builder()
                 .salesProductId(salesProductId)
+                .subscriptionKey(subscriptionKey)
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
@@ -33,6 +35,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
     }
 
     public static NngAbboSalesProduct createNngAbboOneTimeThreeYearConsumption(String salesProductId,
+                                                                               NngAbboSubscriptionPriceKey subscriptionKey,
                                                                                NngAbboProduct product,
                                                                                NngAbboCountry salesCountry,
                                                                                NngAbboClient client,
@@ -42,6 +45,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                                LocalDateTime endTime) {
         return NngAbboOneTimeConsumption.builder()
                 .salesProductId(salesProductId)
+                .subscriptionKey(subscriptionKey)
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
@@ -54,6 +58,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
     }
 
     public static NngAbboSalesProduct createNngAbboTrialPackage(String salesProductId,
+                                                                NngAbboSubscriptionPriceKey subscriptionKey,
                                                                 NngAbboProduct product,
                                                                 NngAbboCountry salesCountry,
                                                                 NngAbboClient client,
@@ -63,6 +68,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                 LocalDateTime endTime) {
         return NngAbboTrialPackage.builder()
                 .salesProductId(salesProductId)
+                .subscriptionKey(subscriptionKey)
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
@@ -75,6 +81,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
     }
 
     public static NngAbboSalesProduct createNngAbboGeneralSubscription(String salesProductId,
+                                                                       NngAbboSubscriptionPriceKey subscriptionKey,
                                                                        NngAbboProduct product,
                                                                        NngAbboCountry salesCountry,
                                                                        NngAbboClient client,
@@ -85,6 +92,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                        NngAbboSalesPeriod salesPeriod) {
         return NngAbboGeneralSubscription.builder()
                 .salesProductId(salesProductId)
+                .subscriptionKey(subscriptionKey)
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
@@ -286,15 +294,21 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                            NngAbboClient client,
                                                            NngAbboSalesType salesType,
                                                            NngPrice salesPrice,
-                                                           LocalDateTime createdTime
+                                                           LocalDateTime createdTime,
+                                                           NngAbboCountry country
     ) {
 
         NngAbboSalesProduct salesProduct = null;
         switch (salesType) {
             case TRIAL_PACKAGE -> salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboTrialPackage(
                     UUID.randomUUID().toString(),
+                    NngAbboSubscriptionPriceKey.builder()
+                            .productId(product.getProductId())
+                            .countryISO2(country.getIsoCountryAlphaTwo())
+                            .salesType(salesType)
+                            .build(),
                     product,
-                    client.getNationalIdNumber().getCountry(),
+                    country,
                     client,
                     salesPrice,
                     createdTime,
@@ -304,8 +318,13 @@ public class NngAbboTradeSimulatorEntityGenerator {
             case GENERAL_SUBSCRIPTION ->
                     salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboGeneralSubscription(
                             UUID.randomUUID().toString(),
+                            NngAbboSubscriptionPriceKey.builder()
+                                    .productId(product.getProductId())
+                                    .countryISO2(country.getIsoCountryAlphaTwo())
+                                    .salesType(salesType)
+                                    .build(),
                             product,
-                            client.getNationalIdNumber().getCountry(),
+                            country,
                             client,
                             salesPrice,
                             LocalDateTime.now(),
@@ -316,8 +335,13 @@ public class NngAbboTradeSimulatorEntityGenerator {
             case ONE_TIME_CONSUMPTION_ONE_YEAR ->
                     salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboOneTimeOneYearConsumption(
                             UUID.randomUUID().toString(),
+                            NngAbboSubscriptionPriceKey.builder()
+                                    .productId(product.getProductId())
+                                    .countryISO2(country.getIsoCountryAlphaTwo())
+                                    .salesType(salesType)
+                                    .build(),
                             product,
-                            client.getNationalIdNumber().getCountry(),
+                            country,
                             client,
                             salesPrice,
                             createdTime,
@@ -327,8 +351,13 @@ public class NngAbboTradeSimulatorEntityGenerator {
             case ONE_TIME_CONSUMPTION_THREE_YEAR ->
                     salesProduct = NngAbboTradeSimulatorEntityGenerator.createNngAbboOneTimeThreeYearConsumption(
                             UUID.randomUUID().toString(),
+                            NngAbboSubscriptionPriceKey.builder()
+                                    .productId(product.getProductId())
+                                    .countryISO2(country.getIsoCountryAlphaTwo())
+                                    .salesType(salesType)
+                                    .build(),
                             product,
-                            client.getNationalIdNumber().getCountry(),
+                            country,
                             client,
                             salesPrice,
                             createdTime,

@@ -73,7 +73,8 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
                         newClient,
                         salesType,
                         salesPrice.getPrice(),
-                        startDate
+                        startDate,
+                        country
                 );
 
                 orderManagementClient.handleNngAbboOrder(oneSale);
