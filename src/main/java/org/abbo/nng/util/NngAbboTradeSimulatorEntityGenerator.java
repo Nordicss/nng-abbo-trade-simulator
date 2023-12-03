@@ -22,7 +22,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                              LocalDateTime endTime) {
         return NngAbboOneTimeConsumption.builder()
                 .salesProductId(salesProductId)
-                .subscriptionKey(subscriptionKey)
+                .subscriptionKey(subscriptionKey.getKey())
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
@@ -45,7 +45,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                                LocalDateTime endTime) {
         return NngAbboOneTimeConsumption.builder()
                 .salesProductId(salesProductId)
-                .subscriptionKey(subscriptionKey)
+                .subscriptionKey(subscriptionKey.getKey())
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
@@ -68,7 +68,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                 LocalDateTime endTime) {
         return NngAbboTrialPackage.builder()
                 .salesProductId(salesProductId)
-                .subscriptionKey(subscriptionKey)
+                .subscriptionKey(subscriptionKey.getKey())
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)
@@ -92,7 +92,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                        NngAbboSalesPeriod salesPeriod) {
         return NngAbboGeneralSubscription.builder()
                 .salesProductId(salesProductId)
-                .subscriptionKey(subscriptionKey)
+                .subscriptionKey(subscriptionKey.getKey())
                 .product(product)
                 .salesCountry(salesCountry)
                 .client(client)

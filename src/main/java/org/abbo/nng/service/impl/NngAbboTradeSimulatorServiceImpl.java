@@ -50,6 +50,7 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
         LocalDateTime startDate = parameters.getFromDate();
         LocalDateTime endDate = parameters.getToDate();
 
+        log.info("Starting generating random trades");
         while (endDate.isAfter(startDate)) {
             Integer numberOfTradesPerDay = generateRandomInteger(
                     parameters.getMaximumTradesPerDay() - parameters.getMinimumTradesPerDay());
@@ -91,6 +92,7 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
             startDate = startDate.plusDays(1L);
         }
 
+        log.info("Finished creating {} of trades!", numberOfTrades);
         return TradeSimulatorResponse.builder()
                 .numberOfTrades(numberOfTrades)
                 .build();
