@@ -78,7 +78,6 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .salesCreatedTime(salesCreatedTime)
                 .startTime(startTime)
                 .endTime(endTime)
-                .salesType(NngAbboSalesType.TRIAL_PACKAGE)
                 .build();
     }
 
