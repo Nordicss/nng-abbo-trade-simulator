@@ -1,6 +1,7 @@
 package org.abbo.nng.util;
 
 import org.nng.abbo.domain.client.NngAbboClient;
+import org.nng.abbo.domain.client.NngAbboClientActivation;
 import org.nng.abbo.domain.client.NngAbboNewClient;
 import org.nng.abbo.domain.credit.CreditApprovedCustomer;
 import org.nng.abbo.domain.geography.*;
@@ -8,6 +9,7 @@ import org.nng.abbo.domain.product.*;
 import org.nng.abbo.domain.sales.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class NngAbboTradeSimulatorEntityGenerator {
@@ -239,18 +241,22 @@ public class NngAbboTradeSimulatorEntityGenerator {
     public static NngAbboClient createNngAbboNewClient(String clientID,
                                                        NngAbboNationalIdNumber nngAbboNationalIdNumber,
                                                        NngAbboName clientName,
+                                                       NngAbboBirthDate birthDate,
                                                        NngAbboTelephoneNumber clientTelephoneNumber,
                                                        NngAbboAddress clientAddress,
                                                        LocalDateTime clientCreatedTime,
-                                                       CreditApprovedCustomer creditApprovedCustomer) {
+                                                       CreditApprovedCustomer creditApprovedCustomer,
+                                                       List<NngAbboClientActivation> activationHistory) {
         return NngAbboNewClient.builder()
                 .clientID(clientID)
                 .nationalIdNumber(nngAbboNationalIdNumber)
                 .clientName(clientName)
+                .birthDate(birthDate)
                 .clientTelephoneNumber(clientTelephoneNumber)
                 .clientAddress(clientAddress)
                 .clientCreatedTime(clientCreatedTime)
                 .creditApprovedCustomer(creditApprovedCustomer)
+                .activationHistory(activationHistory)
                 .build();
     }
 
@@ -279,15 +285,26 @@ public class NngAbboTradeSimulatorEntityGenerator {
         NngAbboCountry country = NngAbboTradeSimulatorEntityGenerator.createNngAbboCountry("United Kingdom", "GB", "GBR");
         NngAbboNationalIdNumber nationalIdNumber = NngAbboTradeSimulatorEntityGenerator.createNngAbboNationalIdNumber(country, "M01010276854");
         NngAbboAddress address = NngAbboTradeSimulatorEntityGenerator.createNngAbboAddress(streetAddress, "W53UP", "Greater London", "London", null, country);
-
+        NngAbboBirthDate birthDate = NngAbboBirthDate.builder()
+                .yearBorn(1959)
+                .monthBorn(8)
+                .dayBorn(7)
+                .build();
+        List<NngAbboClientActivation> activationHistory = List.of(NngAbboClientActivation.builder()
+                .active(true)
+                .timeStamp(LocalDateTime.now())
+                .reason("New Client")
+                .build());
         return NngAbboTradeSimulatorEntityGenerator.createNngAbboNewClient(
                 UUID.randomUUID().toString(),
                 nationalIdNumber,
                 name,
+                birthDate,
                 number,
                 address,
                 LocalDateTime.now(),
-                CreditApprovedCustomer.builder().isApproved(true).build());
+                CreditApprovedCustomer.builder().isApproved(true).build(),
+                activationHistory);
     }
 
     public static NngAbboSalesProduct generateSalesProduct(NngAbboProduct product,
