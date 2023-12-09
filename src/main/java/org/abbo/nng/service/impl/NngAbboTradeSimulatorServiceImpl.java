@@ -2,6 +2,7 @@ package org.abbo.nng.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.abbo.nng.client.NngAbboCacheClient;
+import org.abbo.nng.client.NngAbboCustomerClient;
 import org.abbo.nng.client.NngAbboOrderManagementClient;
 import org.abbo.nng.service.NngAbboTradeSimulatorService;
 import org.abbo.nng.util.NngAbboTradeSimulatorEntityGenerator;
@@ -10,10 +11,12 @@ import org.nng.abbo.domain.documents.sales.NngAbboSubscriptionPriceDocument;
 import org.nng.abbo.domain.geography.*;
 import org.nng.abbo.domain.product.NngAbboProduct;
 import org.nng.abbo.domain.sales.*;
+import org.nng.abbo.domain.shipment.NngAbboShipment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -21,11 +24,15 @@ import java.util.Random;
 @Service
 public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorService {
     private final NngAbboCacheClient cacheClient;
+    private final NngAbboCustomerClient customerClient;
     private final NngAbboOrderManagementClient orderManagementClient;
 
     @Autowired
-    public NngAbboTradeSimulatorServiceImpl(NngAbboCacheClient cacheClient, NngAbboOrderManagementClient orderManagementClient) {
+    public NngAbboTradeSimulatorServiceImpl(NngAbboCacheClient cacheClient,
+                                            NngAbboCustomerClient customerClient,
+                                            NngAbboOrderManagementClient orderManagementClient) {
         this.cacheClient = cacheClient;
+        this.customerClient = customerClient;
         this.orderManagementClient = orderManagementClient;
     }
 
@@ -59,7 +66,9 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
                 NngAbboProduct product = parameters.getProducts().get(generateRandomInteger(parameters.getProducts().size()));
                 NngAbboSalesType salesType = parameters.getSalesTypes().get(generateRandomInteger(parameters.getSalesTypes().size()));
                 NngAbboCountry country = parameters.getCountries().get(generateRandomInteger(parameters.getCountries().size()));
+
                 NngAbboClient newClient = NngAbboTradeSimulatorEntityGenerator.generateClient();
+                customerClient.upsertClient(newClient);
 
                 NngAbboSubscriptionPriceDocument salesPrice = cacheClient.purchaseProduct(
                         NngAbboSubscriptionPriceKey.builder()
@@ -77,6 +86,9 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
                         startDate,
                         country
                 );
+
+                List<NngAbboShipment> shipmentList = NngAbboTradeSimulatorEntityGenerator.createShipmentScheduleForSubscription(oneSale);
+                oneSale.setShipments(shipmentList);
 
                 orderManagementClient.handleNngAbboOrder(oneSale);
                 numberOfTrades = numberOfTrades + 1;
@@ -97,6 +109,4 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
                 .numberOfTrades(numberOfTrades)
                 .build();
     }
-
-
 }

@@ -2,13 +2,16 @@ package org.abbo.nng.util;
 
 import org.nng.abbo.domain.client.NngAbboClient;
 import org.nng.abbo.domain.client.NngAbboClientActivation;
+import org.nng.abbo.domain.client.NngAbboClientType;
 import org.nng.abbo.domain.client.NngAbboNewClient;
 import org.nng.abbo.domain.credit.CreditApprovedCustomer;
 import org.nng.abbo.domain.geography.*;
 import org.nng.abbo.domain.product.*;
 import org.nng.abbo.domain.sales.*;
+import org.nng.abbo.domain.shipment.NngAbboShipment;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -262,18 +265,22 @@ public class NngAbboTradeSimulatorEntityGenerator {
     public static NngAbboClient createNngAbboExistingClient(String clientID,
                                                             NngAbboNationalIdNumber nngAbboNationalIdNumber,
                                                             NngAbboName clientName,
+                                                            NngAbboBirthDate birthDate,
                                                             NngAbboTelephoneNumber clientTelephoneNumber,
                                                             NngAbboAddress clientAddress,
                                                             LocalDateTime clientCreatedTime,
-                                                            CreditApprovedCustomer creditApprovedCustomer) {
+                                                            CreditApprovedCustomer creditApprovedCustomer,
+                                                            List<NngAbboClientActivation> activationHistory) {
         return NngAbboNewClient.builder()
                 .clientID(clientID)
                 .nationalIdNumber(nngAbboNationalIdNumber)
                 .clientName(clientName)
+                .birthDate(birthDate)
                 .clientTelephoneNumber(clientTelephoneNumber)
                 .clientAddress(clientAddress)
                 .clientCreatedTime(clientCreatedTime)
                 .creditApprovedCustomer(creditApprovedCustomer)
+                .activationHistory(activationHistory)
                 .build();
     }
 
@@ -383,5 +390,41 @@ public class NngAbboTradeSimulatorEntityGenerator {
         }
 
         return salesProduct;
+    }
+
+    public static List<NngAbboShipment> createShipmentScheduleForSubscription(NngAbboSalesProduct subscription) {
+        switch (subscription.getSalesType()) {
+            case GENERAL_SUBSCRIPTION -> {
+                return createGeneralSubscriptionSchedule(subscription);
+            }
+            case TRIAL_PACKAGE -> {
+                return createTrialPackageSchedule(subscription);
+            }
+            case ONE_TIME_CONSUMPTION_ONE_YEAR -> {
+                return createOneTimeConsumptionOneYearSchedule(subscription);
+            }
+
+            case ONE_TIME_CONSUMPTION_THREE_YEAR -> {
+                return createOneTimeConsumptionThreeYearSchedule(subscription);
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    private static List<NngAbboShipment> createGeneralSubscriptionSchedule(NngAbboSalesProduct subscription) {
+        return Collections.emptyList();
+    }
+
+    private static List<NngAbboShipment> createTrialPackageSchedule(NngAbboSalesProduct subscription) {
+        return Collections.emptyList();
+    }
+
+    private static List<NngAbboShipment> createOneTimeConsumptionOneYearSchedule(NngAbboSalesProduct subscription) {
+        return Collections.emptyList();
+    }
+
+    private static List<NngAbboShipment> createOneTimeConsumptionThreeYearSchedule(NngAbboSalesProduct subscription) {
+        return Collections.emptyList();
     }
 }

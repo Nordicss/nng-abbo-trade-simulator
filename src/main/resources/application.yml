@@ -6,3 +6,4 @@ domains:
     hosts:
       oms: http://localhost:8085
       caching: http://localhost:8086
+      client: http://localhost:8084
