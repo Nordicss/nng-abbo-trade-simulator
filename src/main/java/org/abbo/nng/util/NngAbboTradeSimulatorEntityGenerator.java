@@ -2,7 +2,6 @@ package org.abbo.nng.util;
 
 import org.nng.abbo.domain.client.NngAbboClient;
 import org.nng.abbo.domain.client.NngAbboClientActivation;
-import org.nng.abbo.domain.client.NngAbboClientType;
 import org.nng.abbo.domain.client.NngAbboNewClient;
 import org.nng.abbo.domain.credit.CreditApprovedCustomer;
 import org.nng.abbo.domain.geography.*;
@@ -11,6 +10,7 @@ import org.nng.abbo.domain.sales.*;
 import org.nng.abbo.domain.shipment.NngAbboShipment;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -302,7 +302,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .reason("New Client")
                 .build());
         return NngAbboTradeSimulatorEntityGenerator.createNngAbboNewClient(
-                UUID.randomUUID().toString(),
+                "Client-ID-123",//UUID.randomUUID().toString(),
                 nationalIdNumber,
                 name,
                 birthDate,
@@ -413,18 +413,94 @@ public class NngAbboTradeSimulatorEntityGenerator {
     }
 
     private static List<NngAbboShipment> createGeneralSubscriptionSchedule(NngAbboSalesProduct subscription) {
-        return Collections.emptyList();
+        List<NngAbboShipment> schedule = new ArrayList<>();
+
+        LocalDateTime firstShipment = subscription.getSalesCreatedTime().plusWeeks(2);
+        LocalDateTime secondShipment = firstShipment.plusMonths(4);
+        LocalDateTime thirdShipment = secondShipment.plusMonths(4);
+
+        NngAbboShipment first = NngAbboShipment.builder()
+                .timeOfShipmentRequest(firstShipment)
+                .cutoffTime(firstShipment)
+                .shipped(false)
+                .build();
+
+        NngAbboShipment second = NngAbboShipment.builder()
+                .timeOfShipmentRequest(secondShipment)
+                .cutoffTime(secondShipment.minusWeeks(2))
+                .shipped(false)
+                .build();
+
+        NngAbboShipment third = NngAbboShipment.builder()
+                .timeOfShipmentRequest(thirdShipment)
+                .cutoffTime(thirdShipment.minusWeeks(2))
+                .shipped(false)
+                .build();
+
+        schedule.add(first);
+        schedule.add(second);
+        schedule.add(third);
+
+        return schedule;
     }
 
     private static List<NngAbboShipment> createTrialPackageSchedule(NngAbboSalesProduct subscription) {
-        return Collections.emptyList();
+        List<NngAbboShipment> schedule = new ArrayList<>();
+
+        NngAbboShipment first = NngAbboShipment.builder()
+                .timeOfShipmentRequest(subscription.getSalesCreatedTime())
+                .cutoffTime(subscription.getSalesCreatedTime())
+                .shipped(false)
+                .build();
+
+        schedule.add(first);
+
+        return schedule;
     }
 
     private static List<NngAbboShipment> createOneTimeConsumptionOneYearSchedule(NngAbboSalesProduct subscription) {
-        return Collections.emptyList();
+        List<NngAbboShipment> schedule = new ArrayList<>();
+
+        NngAbboShipment first = NngAbboShipment.builder()
+                .timeOfShipmentRequest(subscription.getSalesCreatedTime())
+                .cutoffTime(subscription.getSalesCreatedTime())
+                .shipped(false)
+                .build();
+
+        schedule.add(first);
+
+        return schedule;
     }
 
     private static List<NngAbboShipment> createOneTimeConsumptionThreeYearSchedule(NngAbboSalesProduct subscription) {
-        return Collections.emptyList();
+        List<NngAbboShipment> schedule = new ArrayList<>();
+
+        LocalDateTime firstShipment = subscription.getSalesCreatedTime().plusWeeks(2);
+        LocalDateTime secondShipment = firstShipment.plusYears(1);
+        LocalDateTime thirdShipment = secondShipment.plusYears(2);
+
+        NngAbboShipment first = NngAbboShipment.builder()
+                .timeOfShipmentRequest(firstShipment)
+                .cutoffTime(firstShipment)
+                .shipped(false)
+                .build();
+
+        NngAbboShipment second = NngAbboShipment.builder()
+                .timeOfShipmentRequest(secondShipment)
+                .cutoffTime(secondShipment.minusWeeks(2))
+                .shipped(false)
+                .build();
+
+        NngAbboShipment third = NngAbboShipment.builder()
+                .timeOfShipmentRequest(thirdShipment)
+                .cutoffTime(thirdShipment.minusWeeks(2))
+                .shipped(false)
+                .build();
+
+        schedule.add(first);
+        schedule.add(second);
+        schedule.add(third);
+
+        return schedule;
     }
 }
