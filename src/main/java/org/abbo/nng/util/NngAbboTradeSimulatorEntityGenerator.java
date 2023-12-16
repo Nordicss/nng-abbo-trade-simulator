@@ -302,7 +302,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .reason("New Client")
                 .build());
         return NngAbboTradeSimulatorEntityGenerator.createNngAbboNewClient(
-                "Client-ID-123",//UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
                 nationalIdNumber,
                 name,
                 birthDate,
@@ -420,20 +420,30 @@ public class NngAbboTradeSimulatorEntityGenerator {
         LocalDateTime thirdShipment = secondShipment.plusMonths(4);
 
         NngAbboShipment first = NngAbboShipment.builder()
+                .shipmentId(UUID.randomUUID().toString())
                 .timeOfShipmentRequest(firstShipment)
                 .cutoffTime(firstShipment)
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 
         NngAbboShipment second = NngAbboShipment.builder()
                 .timeOfShipmentRequest(secondShipment)
                 .cutoffTime(secondShipment.minusWeeks(2))
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 
         NngAbboShipment third = NngAbboShipment.builder()
                 .timeOfShipmentRequest(thirdShipment)
                 .cutoffTime(thirdShipment.minusWeeks(2))
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 
@@ -450,6 +460,9 @@ public class NngAbboTradeSimulatorEntityGenerator {
         NngAbboShipment first = NngAbboShipment.builder()
                 .timeOfShipmentRequest(subscription.getSalesCreatedTime())
                 .cutoffTime(subscription.getSalesCreatedTime())
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 
@@ -464,6 +477,9 @@ public class NngAbboTradeSimulatorEntityGenerator {
         NngAbboShipment first = NngAbboShipment.builder()
                 .timeOfShipmentRequest(subscription.getSalesCreatedTime())
                 .cutoffTime(subscription.getSalesCreatedTime())
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 
@@ -482,18 +498,27 @@ public class NngAbboTradeSimulatorEntityGenerator {
         NngAbboShipment first = NngAbboShipment.builder()
                 .timeOfShipmentRequest(firstShipment)
                 .cutoffTime(firstShipment)
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 
         NngAbboShipment second = NngAbboShipment.builder()
                 .timeOfShipmentRequest(secondShipment)
                 .cutoffTime(secondShipment.minusWeeks(2))
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 
         NngAbboShipment third = NngAbboShipment.builder()
                 .timeOfShipmentRequest(thirdShipment)
                 .cutoffTime(thirdShipment.minusWeeks(2))
+                .canceled(false)
+                .shipmentId(UUID.randomUUID().toString())
+                .salesProductId(subscription.getSalesProductId())
                 .shipped(false)
                 .build();
 

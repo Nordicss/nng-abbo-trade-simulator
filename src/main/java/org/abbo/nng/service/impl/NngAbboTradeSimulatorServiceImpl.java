@@ -14,11 +14,11 @@ import org.nng.abbo.domain.sales.*;
 import org.nng.abbo.domain.shipment.NngAbboShipment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -89,13 +89,13 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
 
                 List<NngAbboShipment> shipmentList = NngAbboTradeSimulatorEntityGenerator.createShipmentScheduleForSubscription(oneSale);
                 oneSale.setShipments(shipmentList);
-
+                oneSale.setNextDueShipment(findNextShipment(shipmentList));
                 orderManagementClient.handleNngAbboOrder(oneSale);
                 numberOfTrades = numberOfTrades + 1;
 
                 Long sleepInMS = generateRandomLong((parameters.getMaximumThrottleInMS() - parameters.getMinimumThrottleInMS()));
                 try {
-                    Thread.sleep((parameters.getMinimumThrottleInMS()  + sleepInMS));
+                    Thread.sleep((parameters.getMinimumThrottleInMS() + sleepInMS));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -108,5 +108,15 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
         return TradeSimulatorResponse.builder()
                 .numberOfTrades(numberOfTrades)
                 .build();
+    }
+
+    private LocalDate findNextShipment(List<NngAbboShipment> shipments) {
+        return CollectionUtils.isEmpty(shipments) ? null :
+                Collections.min(shipments.stream()
+                        .map(NngAbboShipment::getTimeOfShipmentRequest)
+                        .map(LocalDateTime::toLocalDate)
+                        .toList()
+                        .stream()
+                        .toList());
     }
 }
