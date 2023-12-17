@@ -54,8 +54,8 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
         }
 
         Integer numberOfTrades = 0;
-        LocalDateTime startDate = parameters.getFromDate();
-        LocalDateTime endDate = parameters.getToDate();
+        LocalDate startDate = parameters.getFromDate();
+        LocalDate endDate = parameters.getToDate();
 
         log.info("Starting generating random trades");
         while (endDate.isAfter(startDate)) {
@@ -113,8 +113,7 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
     private LocalDate findNextShipment(List<NngAbboShipment> shipments) {
         return CollectionUtils.isEmpty(shipments) ? null :
                 Collections.min(shipments.stream()
-                        .map(NngAbboShipment::getTimeOfShipmentRequest)
-                        .map(LocalDateTime::toLocalDate)
+                        .map(NngAbboShipment::getDueDate)
                         .toList()
                         .stream()
                         .toList());

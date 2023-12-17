@@ -9,6 +9,7 @@ import org.nng.abbo.domain.product.*;
 import org.nng.abbo.domain.sales.*;
 import org.nng.abbo.domain.shipment.NngAbboShipment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +24,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                              NngAbboClient client,
                                                                              NngPrice salesPrice,
                                                                              LocalDateTime salesCreatedTime,
-                                                                             LocalDateTime startTime,
-                                                                             LocalDateTime endTime) {
+                                                                             LocalDate startDate,
+                                                                             LocalDate endDate) {
         return NngAbboOneTimeConsumption.builder()
                 .salesProductId(salesProductId)
                 .subscriptionKey(subscriptionKey.getKey())
@@ -34,8 +35,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .salesPrice(salesPrice)
                 .salesType(NngAbboSalesType.ONE_TIME_CONSUMPTION_ONE_YEAR)
                 .salesCreatedTime(salesCreatedTime)
-                .startTime(startTime)
-                .endTime(endTime)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
     }
 
@@ -46,8 +47,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                                NngAbboClient client,
                                                                                NngPrice salesPrice,
                                                                                LocalDateTime salesCreatedTime,
-                                                                               LocalDateTime startTime,
-                                                                               LocalDateTime endTime) {
+                                                                               LocalDate startDate,
+                                                                               LocalDate endDate) {
         return NngAbboOneTimeConsumption.builder()
                 .salesProductId(salesProductId)
                 .subscriptionKey(subscriptionKey.getKey())
@@ -57,8 +58,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .salesPrice(salesPrice)
                 .salesType(NngAbboSalesType.ONE_TIME_CONSUMPTION_THREE_YEAR)
                 .salesCreatedTime(salesCreatedTime)
-                .startTime(startTime)
-                .endTime(endTime)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
     }
 
@@ -69,8 +70,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                 NngAbboClient client,
                                                                 NngPrice salesPrice,
                                                                 LocalDateTime salesCreatedTime,
-                                                                LocalDateTime startTime,
-                                                                LocalDateTime endTime) {
+                                                                LocalDate startDate,
+                                                                LocalDate endDate) {
         return NngAbboTrialPackage.builder()
                 .salesProductId(salesProductId)
                 .subscriptionKey(subscriptionKey.getKey())
@@ -79,8 +80,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .client(client)
                 .salesPrice(salesPrice)
                 .salesCreatedTime(salesCreatedTime)
-                .startTime(startTime)
-                .endTime(endTime)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
     }
 
@@ -91,8 +92,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                                        NngAbboClient client,
                                                                        NngPrice salesPrice,
                                                                        LocalDateTime salesCreatedTime,
-                                                                       LocalDateTime startTime,
-                                                                       LocalDateTime endTime,
+                                                                       LocalDate startDate,
+                                                                       LocalDate endDate,
                                                                        NngAbboSalesPeriod salesPeriod) {
         return NngAbboGeneralSubscription.builder()
                 .salesProductId(salesProductId)
@@ -102,8 +103,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .client(client)
                 .salesPrice(salesPrice)
                 .salesCreatedTime(salesCreatedTime)
-                .startTime(startTime)
-                .endTime(endTime)
+                .startDate(startDate)
+                .endDate(endDate)
                 .salesPeriod(salesPeriod)
                 .build();
     }
@@ -317,7 +318,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                                                            NngAbboClient client,
                                                            NngAbboSalesType salesType,
                                                            NngPrice salesPrice,
-                                                           LocalDateTime createdTime,
+                                                           LocalDate createdTime,
                                                            NngAbboCountry country
     ) {
 
@@ -334,7 +335,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                     country,
                     client,
                     salesPrice,
-                    createdTime,
+                    createdTime.atStartOfDay(),
                     createdTime,
                     createdTime
             );
@@ -351,8 +352,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                             client,
                             salesPrice,
                             LocalDateTime.now(),
-                            LocalDateTime.now(),
-                            LocalDateTime.now(),
+                            LocalDate.now(),
+                            LocalDate.now(),
                             NngAbboSalesPeriod.QUARTERLY
                     );
             case ONE_TIME_CONSUMPTION_ONE_YEAR ->
@@ -367,7 +368,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                             country,
                             client,
                             salesPrice,
-                            createdTime,
+                            createdTime.atStartOfDay(),
                             createdTime,
                             createdTime
                     );
@@ -383,7 +384,7 @@ public class NngAbboTradeSimulatorEntityGenerator {
                             country,
                             client,
                             salesPrice,
-                            createdTime,
+                            createdTime.atStartOfDay(),
                             createdTime,
                             createdTime
                     );
@@ -415,14 +416,14 @@ public class NngAbboTradeSimulatorEntityGenerator {
     private static List<NngAbboShipment> createGeneralSubscriptionSchedule(NngAbboSalesProduct subscription) {
         List<NngAbboShipment> schedule = new ArrayList<>();
 
-        LocalDateTime firstShipment = subscription.getSalesCreatedTime().plusWeeks(2);
-        LocalDateTime secondShipment = firstShipment.plusMonths(4);
-        LocalDateTime thirdShipment = secondShipment.plusMonths(4);
+        LocalDate firstShipment = subscription.getSalesCreatedTime().toLocalDate().plusWeeks(2);
+        LocalDate secondShipment = firstShipment.plusMonths(4);
+        LocalDate thirdShipment = secondShipment.plusMonths(4);
 
         NngAbboShipment first = NngAbboShipment.builder()
                 .shipmentId(UUID.randomUUID().toString())
-                .timeOfShipmentRequest(firstShipment)
-                .cutoffTime(firstShipment)
+                .dueDate(firstShipment)
+                .cutoffDate(firstShipment)
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
@@ -430,8 +431,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .build();
 
         NngAbboShipment second = NngAbboShipment.builder()
-                .timeOfShipmentRequest(secondShipment)
-                .cutoffTime(secondShipment.minusWeeks(2))
+                .dueDate(firstShipment)
+                .cutoffDate(secondShipment.minusWeeks(2))
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
@@ -439,8 +440,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .build();
 
         NngAbboShipment third = NngAbboShipment.builder()
-                .timeOfShipmentRequest(thirdShipment)
-                .cutoffTime(thirdShipment.minusWeeks(2))
+                .dueDate(firstShipment)
+                .cutoffDate(thirdShipment.minusWeeks(2))
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
@@ -458,8 +459,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
         List<NngAbboShipment> schedule = new ArrayList<>();
 
         NngAbboShipment first = NngAbboShipment.builder()
-                .timeOfShipmentRequest(subscription.getSalesCreatedTime())
-                .cutoffTime(subscription.getSalesCreatedTime())
+                .dueDate(subscription.getSalesCreatedTime().toLocalDate())
+                .cutoffDate(subscription.getSalesCreatedTime().toLocalDate())
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
@@ -475,8 +476,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
         List<NngAbboShipment> schedule = new ArrayList<>();
 
         NngAbboShipment first = NngAbboShipment.builder()
-                .timeOfShipmentRequest(subscription.getSalesCreatedTime())
-                .cutoffTime(subscription.getSalesCreatedTime())
+                .dueDate(subscription.getSalesCreatedTime().toLocalDate())
+                .cutoffDate(subscription.getSalesCreatedTime().toLocalDate())
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
@@ -491,13 +492,13 @@ public class NngAbboTradeSimulatorEntityGenerator {
     private static List<NngAbboShipment> createOneTimeConsumptionThreeYearSchedule(NngAbboSalesProduct subscription) {
         List<NngAbboShipment> schedule = new ArrayList<>();
 
-        LocalDateTime firstShipment = subscription.getSalesCreatedTime().plusWeeks(2);
-        LocalDateTime secondShipment = firstShipment.plusYears(1);
-        LocalDateTime thirdShipment = secondShipment.plusYears(2);
+        LocalDate firstShipment = subscription.getSalesCreatedTime().toLocalDate().plusWeeks(2);
+        LocalDate secondShipment = firstShipment.plusYears(1);
+        LocalDate thirdShipment = secondShipment.plusYears(2);
 
         NngAbboShipment first = NngAbboShipment.builder()
-                .timeOfShipmentRequest(firstShipment)
-                .cutoffTime(firstShipment)
+                .dueDate(firstShipment)
+                .cutoffDate(firstShipment)
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
@@ -505,8 +506,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .build();
 
         NngAbboShipment second = NngAbboShipment.builder()
-                .timeOfShipmentRequest(secondShipment)
-                .cutoffTime(secondShipment.minusWeeks(2))
+                .dueDate(secondShipment)
+                .cutoffDate(secondShipment.minusWeeks(2))
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
@@ -514,8 +515,8 @@ public class NngAbboTradeSimulatorEntityGenerator {
                 .build();
 
         NngAbboShipment third = NngAbboShipment.builder()
-                .timeOfShipmentRequest(thirdShipment)
-                .cutoffTime(thirdShipment.minusWeeks(2))
+                .dueDate(thirdShipment)
+                .cutoffDate(thirdShipment.minusWeeks(2))
                 .canceled(false)
                 .shipmentId(UUID.randomUUID().toString())
                 .salesProductId(subscription.getSalesProductId())
