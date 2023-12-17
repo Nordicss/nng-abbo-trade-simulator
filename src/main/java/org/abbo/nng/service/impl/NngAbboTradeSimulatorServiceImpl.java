@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -57,7 +56,7 @@ public class NngAbboTradeSimulatorServiceImpl implements NngAbboTradeSimulatorSe
         LocalDate startDate = parameters.getFromDate();
         LocalDate endDate = parameters.getToDate();
 
-        log.info("Starting generating random trades");
+        log.info("Starting generating random trades betweeb {} - AND {}", startDate, endDate);
         while (endDate.isAfter(startDate)) {
             Integer numberOfTradesPerDay = generateRandomInteger(
                     parameters.getMaximumTradesPerDay() - parameters.getMinimumTradesPerDay());
